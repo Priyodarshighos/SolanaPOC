@@ -1,68 +1,40 @@
 package com.example.SolanaPOC.controller;
 
-import com.example.SolanaPOC.core.Account;
+import com.example.SolanaPOC.domain.Bip44Request;
+import com.example.SolanaPOC.domain.PrivateKeyRequest;
+import com.example.SolanaPOC.domain.WalletResponse;
+import com.example.SolanaPOC.service.WalletService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/wallet")
 public class WalletController {
 
+    private final WalletService walletService;
+
+    @Autowired
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
+    }
+
     @GetMapping("/create")
-    public Map<String, String> createWallet() {
-        Account account = new Account();
-        Map<String, String> wallet = new HashMap<>();
-        wallet.put("publicKey", account.getPublicKeyBase58());
-        wallet.put("privateKey", account.getPrivateKeyBase58());
-        return wallet;
+    public WalletResponse createWallet() {
+        return walletService.createWallet();
     }
 
     @PostMapping("/import/bip44")
-    public Map<String, String> importFromBip44(@RequestBody Map<String, String> body) {
-        List<String> words = Arrays.asList(body.get("mnemonic").split(" "));
-        String passphrase = body.getOrDefault("passphrase", "");
-
-        Account account = Account.fromBip44Mnemonic(words, passphrase);
-
-        Map<String, String> wallet = new HashMap<>();
-        wallet.put("publicKey", account.getPublicKeyBase58());
-        wallet.put("privateKey", account.getPrivateKeyBase58());
-
-        return wallet;
+    public WalletResponse importFromBip44(@RequestBody Bip44Request request) {
+        return walletService.importFromBip44(request.mnemonic(), request.passphrase());
     }
 
     @PostMapping("/import/bip44-change")
-    public Map<String, String> importFromBip44Change(@RequestBody Map<String, String> body) {
-        List<String> words = Arrays.asList(body.get("mnemonic").split(" "));
-        String passphrase = body.getOrDefault("passphrase", "");
-
-        Account account = Account.fromBip44MnemonicWithChange(words, passphrase);
-
-        Map<String, String> wallet = new HashMap<>();
-        wallet.put("publicKey", account.getPublicKeyBase58());
-        wallet.put("privateKey", account.getPrivateKeyBase58());
-
-        return wallet;
+    public WalletResponse importFromBip44Change(@RequestBody Bip44Request request) {
+        return walletService.importFromBip44Change(request.mnemonic(), request.passphrase());
     }
 
     @PostMapping("/import/privateKey")
-    public Map<String, String> importFromPrivateKey(@RequestBody Map<String, String> body) {
-        String privateKey = body.get("privateKey");
-
-        Account account = Account.fromBase58PrivateKey(privateKey);
-
-        Map<String, String> wallet = new HashMap<>();
-        wallet.put("publicKey", account.getPublicKeyBase58());
-        wallet.put("privateKey", account.getPrivateKeyBase58());
-
-        return wallet;
+    public WalletResponse importFromPrivateKey(@RequestBody PrivateKeyRequest request) {
+        return walletService.importFromPrivateKey(request.privateKey());
     }
-
-
-
 }
-
