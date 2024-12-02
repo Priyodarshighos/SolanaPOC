@@ -36,15 +36,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.bitcoinj</groupId>
-			<artifactId>bitcoinj-core</artifactId>
-			<version>0.16.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.i2p.crypto</groupId>
-			<artifactId>eddsa</artifactId>
-			<version>0.3.0</version>
+			<groupId>com.mmorrell</groupId>
+			<artifactId>solanaj</artifactId>
+			<version>1.19.2</version>
 		</dependency>
 
 

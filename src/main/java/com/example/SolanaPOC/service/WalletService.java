@@ -1,7 +1,7 @@
 package com.example.SolanaPOC.service;
 
-import com.example.SolanaPOC.core.Account;
 import com.example.SolanaPOC.domain.WalletResponse;
+import org.p2p.solanaj.core.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
